@@ -1,27 +1,81 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Andrey
+ * Date: 14.03.2016
+ * Time: 21:17
+ */
 
 namespace app\controllers;
-
-use yii\web\Controller;
+use app\models\Category;
+use Yii;
 use app\models\TestForm;
-use yii;
 
-class PostController extends Controller
-{
-    public function actionIndex()
-    {
-        $model = new TestForm();        // Создаем объект модели
-                                        // Мы должны загрузить данные в эту модель. Есть 2 способа: заполнять в модели свойства
-                                        // либо использовать массовую загрузку
-        if ($model->load(Yii::$app->request->post())) {                 // Данные загружены
-            if ($model->validate()) {                                   // и данные провалидированы, то мы что-то делаем.
-                Yii::$app->session->setFlash('success', 'Данные приняты');       // Используем флеш-сообщения в сессии
-                return $this->refresh(); 							// В форме по умолчанию сохраняются данные, для их очистки нужен  перезапрос страницы.
-            } else {
-                Yii::$app->session->setFlash('error', 'Ошибка!');                // Задаем в сессию ФлешСообщение с ключом 'error' (по этому ключу сможем обратиться к этому флешсообщению)
-            };
-        };
+class PostController extends AppController{
 
-        return $this->render('test', compact('model'));     // В вид передаем данные из нашей модели (весь объект передали)
+    public $layout = 'basic';
+
+    public function beforeAction($action){
+        if( $action->id == 'index' ){
+            $this->enableCsrfValidation = false;
+        }
+        return parent::beforeAction($action);
     }
+
+    public function actionIndex(){
+        if( Yii::$app->request->isAjax ){
+            debug(Yii::$app->request->post());
+            return 'test';
+        }
+
+        $model = new TestForm();
+        if( $model->load(Yii::$app->request->post()) ){
+            if( $model->validate() ){
+                Yii::$app->session->setFlash('success', 'Данные приняты');
+                return $this->refresh();
+            }else{
+                Yii::$app->session->setFlash('error', 'Ошибка');
+            }
+        }
+
+        $this->view->title = 'Все статьи';
+        return $this->render('test', compact('model'));
+    }
+
+    public function actionShow(){
+        $this->view->title = 'Одна статья!';
+        $this->view->registerMetaTag(['name' => 'keywords', 'content' => 'ключевики...']);
+        $this->view->registerMetaTag(['name' => 'description', 'content' => 'описание страницы...']);
+
+//        $cats = Category::find()->all();
+//        $cats = Category::find()->orderBy(['id' => SORT_DESC])->all();       // По умолчанию прямая сортировка SORT_ASC
+//        $cats = Category::find()->asArray()->all();       // Данные из таблицы вернутся массивом. И доступ к ним в представленни будет уже  $cats['title]
+//        $cats = Category::find()->asArray()->where('parent=691')->all();        //  1 вариант передачи параметров в ->where() в виде строки.    Все строки где поле parent - 691
+//        $cats = Category::find()->asArray()->where(['parent' => '691'])->all();       //  2 вариант передачи параметров в ->where() в виде массива.
+//        $cats = Category::find()->asArray()->where(['like', 'title', 'pp'])->all();       //  аналогично    SELECT * FROM `categories` WHERE `title` LIKE '%pp%'
+//        $cats = Category::find()->asArray()->where(['<=', 'id', 695])->all();               // аналогично  SELECT * FROM `categories` WHERE `id` <= 695
+//        $cats = Category::find()->asArray()->where('parent=691')->limit(2)->all();          //  аналогично SELECT * FROM `categories` WHERE parent=691 LIMIT 2   // Получим первые 2 попавшиеся записи
+//        $cats = Category::find()->asArray()->where('parent=691')->one();                    //  Будет выбрана ОДНА запись       // код SELECT * FROM `categories` WHERE parent=691     Здесь в запросе нет  limit . Запрос избыточен. Значит контроллер получит Все записи но в массив положит только одну.
+                                                                                            // Это не очень хорошо, рекомендуют делать через    ->limit()
+//        $cats = Category::find()->asArray()->where('parent=691')->count();                    //  Получение количества записей.     // аналогично  SELECT COUNT(*) FROM `categories` WHERE parent=691
+//        $cats = Category::find()->asArray()->count();                                       // Без условия  where узнаем  сколько всего записей в таблице       // аналогично   SELECT COUNT(*) FROM `categories`
+
+//        $cats = Category::findOne(['parent' => 691]);                       // Метод findOne  вернет только 1 значение
+//        $cats = Category::findAll(['parent' => 691]);                          // Метод findAll  вернет все значения соответствующие условию   //    аналогично  SELECT * FROM `categories` WHERE `parent`=691
+
+//        $query = "SELECT * FROM categories WHERE title LIKE '%pp%'";            // строка для запроса
+//        $cats = Category::findBySql($query)->all();                             // мы получис аналогично   SELECT * FROM categories WHERE title LIKE '%pp%'
+                                                                                // Так мы можем составить SQL запрос любой сложности и отправить его на сервер.
+//        $query = "SELECT * FROM categories WHERE title LIKE :search";
+//        $cats = Category::findBySql($query, ['search' => '%app%'])->all();         // Запрос будет аналогичен  SELECT * FROM categories WHERE title LIKE '%app%'
+                                                                                    // но запрос подготовлен для выполнения, параметры экранированы и запрос безопасен.
+
+
+        $cats
+
+
+
+        return $this->render('show', compact('cats'));
+    }
+
 }

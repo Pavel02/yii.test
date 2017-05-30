@@ -1,16 +1,22 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Andrey
+ * Date: 26.03.2016
+ * Time: 9:32
+ */
 
 namespace app\models;
 use yii\base\Model;
 
-class TestForm extends Model
-{
-    public $name;           // У нас будут 3 поля, поэтому в модели 3 свойства
+
+class TestForm extends Model{
+
+    public $name;
     public $email;
     public $text;
 
-    public function attributeLabels()       // Данный метод возвращает массив c именами лейблов
-    {
+    public function attributeLabels(){
         return [
             'name' => 'Имя',
             'email' => 'E-mail',
@@ -18,23 +24,22 @@ class TestForm extends Model
         ];
     }
 
-    public function rules()             // Возвращает массив с правилами для всех полей
-    {
+    public function rules(){
         return [
-            [['name', 'email'], 'required', 'message' => 'Поле обязательно'],       // Если не будет message, то сообщения на английском
-            ['email', 'email'],                                                      // Можем в 'config/web.php/'  добавить настройку  'language' => 'ru', тогда станет на русском
-//            ['name', 'string', 'min' => 2, 'tooShort' => 'Мало'],                 // поле name текстовое и минимум 2 символа. 'toShort' задает текст сообщения предупреждения
-//            ['name', 'string', 'max' => 5, 'tooLong' => 'Много']
-            ['name', 'string', 'length' => [2, 5] ],                             // Если текст предупреждения по умолчанию нас устраивает, то длину можем задать в одном правиле
-            ['name', 'myRule' ],                                                 // Задаем свое правило валидации, которое будет задано отдельной функцией ниже.
-            ['text', 'trim']                                      // Псевдо валидатор (будет автоматом обрезать пробелы спереди и сзади.
+            [ ['name', 'email'], 'required' ],
+            [ 'email', 'email' ],
+//            [ 'name', 'string', 'min' => 2, 'tooShort' => 'Мало' ],
+//            [ 'name', 'string', 'max'=> 5, 'tooLong' => 'Много' ]
+            [ 'name', 'string', 'length' => [2,5] ],
+            [ 'name', 'myRule' ],
+            [ 'text', 'trim' ],
         ];
     }
 
-    public function myRule($attr)                                // Наше правило валидации. Причем проверяться оно будет на сервере, а не в браузере у клиента
-    {
-        if (!in_array($this->$attr, ['hello', 'world']) ) {
+    public function myRule($attr){
+        if( !in_array($this->$attr, ['hello', 'world']) ){
             $this->addError($attr, 'Wrong!');
         }
     }
-}
+
+} 
