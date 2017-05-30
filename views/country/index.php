@@ -1,4 +1,5 @@
 <?php
+//   http://yii.test/basic/web/index.php?r=country%2Findex&page=1
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
 ?>
@@ -12,4 +13,4 @@ use yii\widgets\LinkPager;
     <?php endforeach; ?>
 </ul>
 
-<?= LinkPager::widget(['pagination' => $pagination]) ?>
+<?= LinkPager::widget(['pagination' => $pagination]); ?>
