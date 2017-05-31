@@ -28,9 +28,39 @@ class PostController extends AppController{
             return 'test';
         }
 
+//        $posts = TestForm::findOne(3);      // Создаем новый объект с выборкой 3 поста
+////        print_r($posts);                  // Распечатываем для себя убедиться
+//        $posts->email = '222@555.ru';       // Вручную задаем занчения поля  email  для  3 поста
+//        $posts->save();                     // Сохраняем изменение
+//
+//
+//
+//        $posts = TestForm::findOne(2);
+//        $posts->delete();
+
+
+
+        // первый вар сохранения инфо в БД
+
         $model = new TestForm();
+//        $model->name = 'Автор';             // Заполняем данные в модель. Пока что вручную.
+//        $model->email = 'mail@mail.com';
+//        $model->text = 'Текст сообщения';
+//        $model->save();                       // Сохраняет свойства объекта модели в БД
+
+        
+//        if( $model->load(Yii::$app->request->post()) ){
+//            if( $model->validate() ){
+//                Yii::$app->session->setFlash('success', 'Данные приняты');
+//                return $this->refresh();
+//            }else{
+//                Yii::$app->session->setFlash('error', 'Ошибка');
+//            }
+//        }
+
+        // 2 вариант сохранения в БД.
         if( $model->load(Yii::$app->request->post()) ){
-            if( $model->validate() ){
+            if( $model->save() ){
                 Yii::$app->session->setFlash('success', 'Данные приняты');
                 return $this->refresh();
             }else{
@@ -71,8 +101,10 @@ class PostController extends AppController{
                                                                                     // но запрос подготовлен для выполнения, параметры экранированы и запрос безопасен.
 
 
-        $cats
-
+//        $cats = Category::findOne(694);                 // здесь ленивая загрузка
+//        $cats = Category::find()->with('produts')->where('id=694')->all();                 // здесь жадная  загрузка
+//        $cats = Category::find()->all();                      // здесь ленивая загрузка
+        $cats = Category::find()->with('products')->all();      // здесь жадная загрузка
 
 
         return $this->render('show', compact('cats'));

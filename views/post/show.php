@@ -1,5 +1,6 @@
 <?php
 //$this->title = 'Одна статья';
+use app\components\MyWidget;
 ?>
 
 <?php $this->beginBlock('block1'); ?>
@@ -8,13 +9,41 @@
 
 <h1>Show Action</h1>
 
+<?php // echo MyWidget::widget(['name' => 'Вася']); ?>
+
+<?php MyWidget::begin() ?>
+    <h1> Передают привет всем странам мира.</h1>
+<?php MyWidget::end() ?>
+
+
+
+
+
 <?php
-foreach ($cats as $cat) {
-    echo $cat->title . '<br>';
-}
+//foreach ($cats as $cat) {
+//    echo $cat->title . '<br>';
+//}
+//?>
+
+<?php // echo count($cats->products) ?>
+
+<?php // print_r($cats)?>
+
+<?php
+//    foreach ($cats as $cat) {
+//        echo '<ul>';
+//            echo '<li>' . $cat->title . '</li>';
+//            $products = $cat->products;
+//            foreach ($products as $product) {
+//                echo '<ul>';
+//                    echo '<li>' . $product->title . '</li>';
+//                echo '</ul>';
+//            }
+//        echo '</ul>';
+//    }
 ?>
 
-<?php print_r($cats)?>
+
 
 <button class="btn btn-success" id="btn">Click me...</button>
 
